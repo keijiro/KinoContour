@@ -36,13 +36,22 @@ namespace Kino
             set { _filterType = value; }
         }
 
-        // Line width
-        [SerializeField, Range(1, 8)]
-        int _lineWidth = 1;
+        // Sensitivity
+        [SerializeField, Range(0, 10)]
+        float _sensitivity = 1;
 
-        public int lineWidth {
-            get { return _lineWidth; }
-            set { _lineWidth = value; }
+        public float sensitivity {
+            get { return _sensitivity; }
+            set { _sensitivity = value; }
+        }
+
+        // Depth fall-off
+        [SerializeField]
+        float _fallOffDepth = 40;
+
+        public float fallOffDepth {
+            get { return _fallOffDepth; }
+            set { _fallOffDepth = value; }
         }
 
         // Background color
@@ -95,7 +104,8 @@ namespace Kino
                 _material.DisableKeyword("DISCARD_OUTER");
             }
 
-            _material.SetFloat("_Distance", _lineWidth);
+            _material.SetFloat("_Sensitivity", _sensitivity);
+            _material.SetFloat("_FallOff", _fallOffDepth);
             _material.SetColor("_Color", _lineColor);
             _material.SetColor("_BgColor", _backgroundColor);
 

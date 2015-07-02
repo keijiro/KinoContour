@@ -20,7 +20,8 @@ Shader "Hidden/ContourLine"
     sampler2D _MainTex;
     float2 _MainTex_TexelSize;
 
-    float _Distance;
+    float _Sensitivity;
+    float _FallOff;
     half4 _Color;
     half4 _BgColor;
 
@@ -35,9 +36,11 @@ Shader "Hidden/ContourLine"
     {
         half4 source = tex2D(_MainTex, i.uv);
 
-        float4 d = _Distance * float4(_MainTex_TexelSize.xy, -_MainTex_TexelSize.x, 0);
+        float4 d = float4(_MainTex_TexelSize.xy, -_MainTex_TexelSize.x, 0);
 
-        float z0 = get_depth(i.uv);
+        float z0_sample = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);
+        float z0_real = LinearEyeDepth(z0_sample);
+        float z0 = Linear01Depth(z0_sample);
 
         float4 z_diag = float4(
             get_depth(i.uv + d.xy), // TR
@@ -61,7 +64,7 @@ Shader "Hidden/ContourLine"
         z_axis = max(z_axis, z0.xxxx);
         #endif
 
-        z_diag /= z0;
+        z_diag -= z0;
         z_axis /= z0;
 
         float4 sobel_h = z_diag * float4( 1,  1, -1, -1) + z_axis * float4( 1,  0,  0, -1);
@@ -70,7 +73,8 @@ Shader "Hidden/ContourLine"
         float sobel_x = dot(sobel_h, (float4)1);
         float sobel_y = dot(sobel_v, (float4)1);
 
-        float sobel = saturate(sqrt(sobel_x * sobel_x + sobel_y * sobel_y));
+        float sobel = sqrt(sobel_x * sobel_x + sobel_y * sobel_y);
+        sobel = saturate(sobel * _Sensitivity * (1.0 - z0_real / _FallOff));
 
         half3 c_0 = lerp(source.rgb, _BgColor.rgb, _BgColor.a);
         half3 c_o = lerp(c_0, _Color.rgb, sobel * _Color.a);

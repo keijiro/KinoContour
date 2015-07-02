@@ -14,14 +14,16 @@ namespace Kino
     {
         SerializedProperty _lineColor;
         SerializedProperty _filterType;
-        SerializedProperty _lineWidth;
+        SerializedProperty _sensitivity;
+        SerializedProperty _fallOffDepth;
         SerializedProperty _backgroundColor;
 
         void OnEnable()
         {
             _lineColor = serializedObject.FindProperty("_lineColor");
             _filterType = serializedObject.FindProperty("_filterType");
-            _lineWidth = serializedObject.FindProperty("_lineWidth");
+            _sensitivity = serializedObject.FindProperty("_sensitivity");
+            _fallOffDepth = serializedObject.FindProperty("_fallOffDepth");
             _backgroundColor = serializedObject.FindProperty("_backgroundColor");
         }
 
@@ -31,7 +33,8 @@ namespace Kino
 
             EditorGUILayout.PropertyField(_lineColor);
             EditorGUILayout.PropertyField(_filterType);
-            EditorGUILayout.PropertyField(_lineWidth);
+            EditorGUILayout.PropertyField(_sensitivity);
+            EditorGUILayout.PropertyField(_fallOffDepth);
             EditorGUILayout.PropertyField(_backgroundColor);
 
             serializedObject.ApplyModifiedProperties();

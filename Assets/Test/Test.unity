@@ -151,7 +151,7 @@ ParticleSystem:
   speed: 1
   randomSeed: 0
   looping: 1
-  prewarm: 0
+  prewarm: 1
   playOnAwake: 1
   moveWithTransform: 1
   InitialModule:
@@ -1376,8 +1376,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lineColor: {r: 0, g: 0, b: 0, a: 1}
-  _filterType: 1
-  _lineWidth: 1
+  _filterType: 0
+  _sensitivity: 4
+  _fallOffDepth: 20
   _backgroundColor: {r: 1, g: 1, b: 1, a: 0}
   _shader: {fileID: 4800000, guid: b8cb1cfbd02c146ccbe95b4baf27a54e, type: 3}
 --- !u!81 &1039614770
@@ -1418,7 +1419,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 1
-  far clip plane: 100
+  far clip plane: 200
   field of view: 30
   orthographic: 0
   orthographic size: 5
@@ -1426,7 +1427,7 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: -1
+  m_RenderingPath: 3
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_HDR: 0
@@ -1587,7 +1588,7 @@ Transform:
   m_GameObject: {fileID: 1964778292}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 100, y: 100, z: 100}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
