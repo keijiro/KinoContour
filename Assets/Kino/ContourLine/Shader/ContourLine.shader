@@ -13,15 +13,14 @@ Shader "Hidden/ContourLine"
     }
     CGINCLUDE
 
-    #pragma multi_compile _ DISCARD_INNER DISCARD_OUTER
-
     #include "UnityCG.cginc"
 
     sampler2D _MainTex;
     float2 _MainTex_TexelSize;
 
-    float _Sensitivity;
-    float _FallOff;
+    float _Strength;
+    float _Threshold;
+    float _FallOffDepth;
     half4 _Color;
     half4 _BgColor;
 
@@ -56,13 +55,8 @@ Shader "Hidden/ContourLine"
             get_depth(i.uv - d.wy)  // B
         );
 
-        #ifdef DISCARD_INNER
-        z_diag = min(z_diag, z0.xxxx);
-        z_axis = min(z_axis, z0.xxxx);
-        #elif DISCARD_OUTER
         z_diag = max(z_diag, z0.xxxx);
         z_axis = max(z_axis, z0.xxxx);
-        #endif
 
         z_diag -= z0;
         z_axis /= z0;
@@ -74,10 +68,11 @@ Shader "Hidden/ContourLine"
         float sobel_y = dot(sobel_v, (float4)1);
 
         float sobel = sqrt(sobel_x * sobel_x + sobel_y * sobel_y);
-        sobel = saturate(sobel * _Sensitivity * (1.0 - z0_real / _FallOff));
+        float falloff = 1.0 - saturate(z0_real / _FallOffDepth);
+        float op = saturate((sobel * falloff - _Threshold) * _Strength);
 
         half3 c_0 = lerp(source.rgb, _BgColor.rgb, _BgColor.a);
-        half3 c_o = lerp(c_0, _Color.rgb, sobel * _Color.a);
+        half3 c_o = lerp(c_0, _Color.rgb, op * _Color.a);
         return half4(c_o, source.a);
     }
 

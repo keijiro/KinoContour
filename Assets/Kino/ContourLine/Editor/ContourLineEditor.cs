@@ -13,16 +13,16 @@ namespace Kino
     public class ContourLineEditor : Editor
     {
         SerializedProperty _lineColor;
-        SerializedProperty _filterType;
-        SerializedProperty _sensitivity;
+        SerializedProperty _filterStrength;
+        SerializedProperty _filterThreshold;
         SerializedProperty _fallOffDepth;
         SerializedProperty _backgroundColor;
 
         void OnEnable()
         {
             _lineColor = serializedObject.FindProperty("_lineColor");
-            _filterType = serializedObject.FindProperty("_filterType");
-            _sensitivity = serializedObject.FindProperty("_sensitivity");
+            _filterStrength = serializedObject.FindProperty("_filterStrength");
+            _filterThreshold = serializedObject.FindProperty("_filterThreshold");
             _fallOffDepth = serializedObject.FindProperty("_fallOffDepth");
             _backgroundColor = serializedObject.FindProperty("_backgroundColor");
         }
@@ -32,8 +32,8 @@ namespace Kino
             serializedObject.Update();
 
             EditorGUILayout.PropertyField(_lineColor);
-            EditorGUILayout.PropertyField(_filterType);
-            EditorGUILayout.PropertyField(_sensitivity);
+            EditorGUILayout.PropertyField(_filterStrength);
+            EditorGUILayout.PropertyField(_filterThreshold);
             EditorGUILayout.PropertyField(_fallOffDepth);
             EditorGUILayout.PropertyField(_backgroundColor);
 

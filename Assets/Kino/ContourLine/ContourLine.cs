@@ -23,26 +23,22 @@ namespace Kino
             set { _lineColor = value; }
         }
 
-        // Filter type
-        public enum FilterType {
-            Thick, ThinInner, ThinOuter
+        // Filter strength
+        [SerializeField, Range(1, 10)]
+        float _filterStrength = 1;
+
+        public float filterStrength {
+            get { return _filterStrength; }
+            set { _filterStrength = value; }
         }
 
-        [SerializeField]
-        FilterType _filterType = FilterType.ThinInner;
+        // Filter threshold
+        [SerializeField, Range(0.1f, 1.0f)]
+        float _filterThreshold = 0.1f;
 
-        public FilterType filterType {
-            get { return _filterType; }
-            set { _filterType = value; }
-        }
-
-        // Sensitivity
-        [SerializeField, Range(0, 10)]
-        float _sensitivity = 1;
-
-        public float sensitivity {
-            get { return _sensitivity; }
-            set { _sensitivity = value; }
+        public float filterThreshold {
+            get { return _filterThreshold; }
+            set { _filterThreshold = value; }
         }
 
         // Depth fall-off
@@ -88,24 +84,9 @@ namespace Kino
                 _material.hideFlags = HideFlags.DontSave;
             }
 
-            if (_filterType == FilterType.ThinInner)
-            {
-                _material.DisableKeyword("DISCARD_INNER");
-                _material.EnableKeyword("DISCARD_OUTER");
-            }
-            else if (_filterType == FilterType.ThinOuter)
-            {
-                _material.EnableKeyword("DISCARD_INNER");
-                _material.DisableKeyword("DISCARD_OUTER");
-            }
-            else
-            {
-                _material.DisableKeyword("DISCARD_INNER");
-                _material.DisableKeyword("DISCARD_OUTER");
-            }
-
-            _material.SetFloat("_Sensitivity", _sensitivity);
-            _material.SetFloat("_FallOff", _fallOffDepth);
+            _material.SetFloat("_Strength", _filterStrength);
+            _material.SetFloat("_Threshold", _filterThreshold);
+            _material.SetFloat("_FallOffDepth", _fallOffDepth);
             _material.SetColor("_Color", _lineColor);
             _material.SetColor("_BgColor", _backgroundColor);
 
