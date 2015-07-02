@@ -6,6 +6,6 @@ public class PackageTool
     [MenuItem("Package/Update Package")]
     static void UpdatePackage()
     {
-        AssetDatabase.ExportPackage("Assets/Kino", "ContourLine.unitypackage", ExportPackageOptions.Recurse);
+        AssetDatabase.ExportPackage("Assets/Kino", "KinoContour.unitypackage", ExportPackageOptions.Recurse);
     }
 }
