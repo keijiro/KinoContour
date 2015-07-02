@@ -26,8 +26,8 @@ using UnityEditor;
 namespace Kino
 {
     [CanEditMultipleObjects]
-    [CustomEditor(typeof(KinoContour))]
-    public class KinoContourEditor : Editor
+    [CustomEditor(typeof(Contour))]
+    public class ContourEditor : Editor
     {
         SerializedProperty _lineColor;
         SerializedProperty _filterStrength;

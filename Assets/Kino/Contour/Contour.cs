@@ -26,8 +26,8 @@ namespace Kino
 {
     [ExecuteInEditMode]
     [RequireComponent(typeof(Camera))]
-    [AddComponentMenu("Kino Image Effects/KinoContour")]
-    public class KinoContour : MonoBehaviour
+    [AddComponentMenu("Kino Image Effects/Contour")]
+    public class Contour : MonoBehaviour
     {
         #region Public Properties
 
