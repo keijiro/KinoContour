@@ -38,12 +38,13 @@ namespace Kino
         SerializedProperty _fallOffDepth;
 
         static string useDeferredWarning =
-            "G-buffer is required for the normal filter. Use the deferred rendering path.";
+            "G-buffer is required for normal edge detection. " +
+            "Use the deferred rendering path.";
 
         bool CheckDeferred()
         {
             var cam = ((Contour)target).GetComponent<Camera>();
-            return cam.renderingPath == RenderingPath.DeferredShading;
+            return cam.actualRenderingPath == RenderingPath.DeferredShading;
         }
 
         void OnEnable()
