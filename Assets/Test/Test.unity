@@ -37,9 +37,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
---- !u!127 &3
-LevelGameManager:
-  m_ObjectHideFlags: 0
 --- !u!157 &4
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -68,6 +65,7 @@ LightmapSettings:
     m_TextureCompression: 1
     m_FinalGather: 0
     m_FinalGatherRayCount: 1024
+    m_ReflectionCompression: 2
   m_LightmapSnapshot: {fileID: 0}
   m_RuntimeCPUUsage: 25
 --- !u!196 &5
@@ -393,7 +391,7 @@ ParticleSystem:
     enabled: 1
     m_Type: 0
     rate:
-      scalar: 20
+      scalar: 200
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1375,11 +1373,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6ffff0e474954f3a926daf865cc2eaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _lineColor: {r: 1, g: 1, b: 1, a: .628000021}
-  _filterStrength: 4
-  _filterThreshold: .100000001
+  _lineColor: {r: .176470578, g: .176470578, b: .176470578, a: 1}
+  _backgroundColor: {r: .963235319, g: .963235319, b: .963235319, a: 1}
+  _lowThreshold: .100000001
+  _highThreshold: .300000012
+  _depthSensitivity: 2
+  _normalSensitivity: .670000017
   _fallOffDepth: 40
-  _backgroundColor: {r: 0, g: 0, b: 0, a: .977999985}
   _shader: {fileID: 4800000, guid: b8cb1cfbd02c146ccbe95b4baf27a54e, type: 3}
 --- !u!81 &1039614770
 AudioListener:
@@ -1430,6 +1430,7 @@ Camera:
   m_RenderingPath: 3
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
+  m_TargetEye: 3
   m_HDR: 0
   m_OcclusionCulling: 0
   m_StereoConvergence: 10

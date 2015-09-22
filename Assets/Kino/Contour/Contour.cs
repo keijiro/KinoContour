@@ -40,22 +40,49 @@ namespace Kino
             set { _lineColor = value; }
         }
 
-        // Filter strength
-        [SerializeField, Range(1, 10)]
-        float _filterStrength = 1;
+        // Background color
+        [SerializeField]
+        Color _backgroundColor = new Color(1, 1, 1, 0);
 
-        public float filterStrength {
-            get { return _filterStrength; }
-            set { _filterStrength = value; }
+        public Color backgroundColor {
+            get { return _backgroundColor; }
+            set { _backgroundColor = value; }
         }
 
-        // Filter threshold
-        [SerializeField, Range(0.1f, 1.0f)]
-        float _filterThreshold = 0.1f;
+        // Low threshold
+        [SerializeField, Range(0, 1)]
+        float _lowThreshold = 0.05f;
 
-        public float filterThreshold {
-            get { return _filterThreshold; }
-            set { _filterThreshold = value; }
+        public float lowThreshold {
+            get { return _lowThreshold; }
+            set { _lowThreshold = value; }
+        }
+
+        // High threshold
+        [SerializeField, Range(0, 1)]
+        float _highThreshold = 0.5f;
+
+        public float highThreshold {
+            get { return _highThreshold; }
+            set { _highThreshold = value; }
+        }
+
+        // Depth sensitivity
+        [SerializeField, Range(0, 2)]
+        float _depthSensitivity = 1;
+
+        public float depthSensitivity {
+            get { return _depthSensitivity; }
+            set { _depthSensitivity = value; }
+        }
+
+        // Normal sensitivity
+        [SerializeField, Range(0, 1)]
+        float _normalSensitivity = 0;
+
+        public float normalSensitivity {
+            get { return _normalSensitivity; }
+            set { _normalSensitivity = value; }
         }
 
         // Depth fall-off
@@ -65,15 +92,6 @@ namespace Kino
         public float fallOffDepth {
             get { return _fallOffDepth; }
             set { _fallOffDepth = value; }
-        }
-
-        // Background color
-        [SerializeField]
-        Color _backgroundColor = new Color(1, 1, 1, 0);
-
-        public Color backgroundColor {
-            get { return _backgroundColor; }
-            set { _backgroundColor = value; }
         }
 
         #endregion
@@ -101,11 +119,27 @@ namespace Kino
                 _material.hideFlags = HideFlags.DontSave;
             }
 
-            _material.SetFloat("_Strength", _filterStrength);
-            _material.SetFloat("_Threshold", _filterThreshold);
-            _material.SetFloat("_FallOffDepth", _fallOffDepth);
             _material.SetColor("_Color", _lineColor);
             _material.SetColor("_BgColor", _backgroundColor);
+
+            var hi = Mathf.Max(_lowThreshold, _highThreshold);
+            _material.SetFloat("_LowThreshold", _lowThreshold);
+            _material.SetFloat("_HighThreshold", hi);
+
+            _material.SetFloat("_DepthSensitivity", _depthSensitivity);
+            _material.SetFloat("_NormalSensitivity", _normalSensitivity);
+
+            _material.SetFloat("_FallOffDepth", _fallOffDepth);
+
+            if (_depthSensitivity > 0)
+                _material.EnableKeyword("USE_DEPTH");
+            else
+                _material.DisableKeyword("USE_DEPTH");
+
+            if (_normalSensitivity > 0)
+                _material.EnableKeyword("USE_NORMAL");
+            else
+                _material.DisableKeyword("USE_NORMAL");
 
             Graphics.Blit(source, destination, _material);
         }

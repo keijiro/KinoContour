@@ -30,18 +30,31 @@ namespace Kino
     public class ContourEditor : Editor
     {
         SerializedProperty _lineColor;
-        SerializedProperty _filterStrength;
-        SerializedProperty _filterThreshold;
-        SerializedProperty _fallOffDepth;
         SerializedProperty _backgroundColor;
+        SerializedProperty _lowThreshold;
+        SerializedProperty _highThreshold;
+        SerializedProperty _depthSensitivity;
+        SerializedProperty _normalSensitivity;
+        SerializedProperty _fallOffDepth;
+
+        static string useDeferredWarning =
+            "G-buffer is required for the normal filter. Use the deferred rendering path.";
+
+        bool CheckDeferred()
+        {
+            var cam = ((Contour)target).GetComponent<Camera>();
+            return cam.renderingPath == RenderingPath.DeferredShading;
+        }
 
         void OnEnable()
         {
             _lineColor = serializedObject.FindProperty("_lineColor");
-            _filterStrength = serializedObject.FindProperty("_filterStrength");
-            _filterThreshold = serializedObject.FindProperty("_filterThreshold");
-            _fallOffDepth = serializedObject.FindProperty("_fallOffDepth");
             _backgroundColor = serializedObject.FindProperty("_backgroundColor");
+            _lowThreshold = serializedObject.FindProperty("_lowThreshold");
+            _highThreshold = serializedObject.FindProperty("_highThreshold");
+            _depthSensitivity = serializedObject.FindProperty("_depthSensitivity");
+            _normalSensitivity = serializedObject.FindProperty("_normalSensitivity");
+            _fallOffDepth = serializedObject.FindProperty("_fallOffDepth");
         }
 
         public override void OnInspectorGUI()
@@ -49,10 +62,26 @@ namespace Kino
             serializedObject.Update();
 
             EditorGUILayout.PropertyField(_lineColor);
-            EditorGUILayout.PropertyField(_filterStrength);
-            EditorGUILayout.PropertyField(_filterThreshold);
-            EditorGUILayout.PropertyField(_fallOffDepth);
             EditorGUILayout.PropertyField(_backgroundColor);
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.PropertyField(_lowThreshold);
+            EditorGUILayout.PropertyField(_highThreshold);
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.PropertyField(_depthSensitivity);
+            EditorGUILayout.PropertyField(_normalSensitivity);
+
+            if (_normalSensitivity.floatValue > 0 && !CheckDeferred())
+                EditorGUILayout.HelpBox(useDeferredWarning, MessageType.Warning);
+
+            EditorGUILayout.Space();
+
+            if (_depthSensitivity.hasMultipleDifferentValues ||
+                _depthSensitivity.floatValue > 0)
+                EditorGUILayout.PropertyField(_fallOffDepth);
 
             serializedObject.ApplyModifiedProperties();
         }
