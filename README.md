@@ -3,7 +3,7 @@ KinoContour
 
 KinoContour is a contour line (edge detection) filter for Unity.
 
-![screenshot](https://41.media.tumblr.com/acbd908b420721254479c1d29bf56f25/tumblr_nv20noJut81qio469o1_1280.png)
+![screenshot](http://i.imgur.com/lJIuddA.png)
 
 License
 -------
