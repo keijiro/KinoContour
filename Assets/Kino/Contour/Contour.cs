@@ -138,13 +138,13 @@ namespace Kino
             _material.SetColor("_Color", _lineColor);
             _material.SetColor("_BgColor", _backgroundColor);
 
-            _material.SetFloat("_LowThreshold", _lowThreshold);
-            _material.SetFloat("_HighThreshold", _highThreshold);
+            _material.SetFloat("_Threshold", _lowThreshold);
+            _material.SetFloat("_InvRange", 1 / (_highThreshold - _lowThreshold));
 
             _material.SetFloat("_DepthSensitivity", _depthSensitivity);
             _material.SetFloat("_NormalSensitivity", _normalSensitivity);
 
-            _material.SetFloat("_FallOffDepth", _fallOffDepth);
+            _material.SetFloat("_InvFallOffDepth", 1 / _fallOffDepth);
 
             if (_depthSensitivity > 0)
                 _material.EnableKeyword("USE_DEPTH");

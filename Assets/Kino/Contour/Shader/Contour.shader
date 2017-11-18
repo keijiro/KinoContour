@@ -43,72 +43,70 @@ Shader "Hidden/Kino/Contour"
     half4 _Color;
     half4 _BgColor;
 
-    float _LowThreshold;
-    float _HighThreshold;
+    half _Threshold;
+    float _InvRange;
 
-    float _DepthSensitivity;
-    float _NormalSensitivity;
+    half _DepthSensitivity;
+    half _NormalSensitivity;
 
-    float _FallOffDepth;
+    float _InvFallOffDepth;
 
     half4 frag(v2f_img i) : SV_Target
     {
-        float4 disp = float4(_MainTex_TexelSize.xy, -_MainTex_TexelSize.x, 0);
+        // Four sample points of the roberts cross operator
+        float2 uv0 = i.uv;                                   // TL
+        float2 uv1 = i.uv + _MainTex_TexelSize.xy;           // BR
+        float2 uv2 = i.uv + float2(_MainTex_TexelSize.x, 0); // TR
+        float2 uv3 = i.uv + float2(0, _MainTex_TexelSize.y); // BL
 
-        // four sample points for the roberts cross operator
-        float2 uv0 = i.uv;           // TL
-        float2 uv1 = i.uv + disp.xy; // BR
-        float2 uv2 = i.uv + disp.xw; // TR
-        float2 uv3 = i.uv + disp.wy; // BL
+        half edge = 0;
 
-        float edge = 0;
+    #ifdef USE_DEPTH
 
-        #ifdef USE_DEPTH
-
-        // sample depth values
+        // Depth samples
         float zs0 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv0);
         float zs1 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv1);
         float zs2 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv2);
         float zs3 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv3);
 
-        // calculate fall-off parameter from the depth of the nearest point
+        // Calculate fall-off parameter from the depth of the nearest point
         float zm = min(min(min(zs0, zs1), zs2), zs3);
-        float falloff = 1.0 - saturate(LinearEyeDepth(zm) / _FallOffDepth);
+        float falloff = 1.0 - saturate(LinearEyeDepth(zm) * _InvFallOffDepth);
 
-        // convert to linear depth value
+        // Convert to linear depth values.
         float z0 = Linear01Depth(zs0);
         float z1 = Linear01Depth(zs1);
         float z2 = Linear01Depth(zs2);
         float z3 = Linear01Depth(zs3);
 
-        // roberts cross operator
+        // Roberts cross operator
         float zg1 = z1 - z0;
         float zg2 = z3 - z2;
         float zg = sqrt(zg1 * zg1 + zg2 * zg2);
 
         edge = zg * falloff * _DepthSensitivity / Linear01Depth(zm);
 
-        #endif
+    #endif
 
-        #ifdef USE_NORMAL
+    #ifdef USE_NORMAL
 
-        // sample normal vector values from the g-buffer
+        // Normal samples from the G-buffer
         float3 n0 = tex2D(_CameraGBufferTexture2, uv0);
         float3 n1 = tex2D(_CameraGBufferTexture2, uv1);
         float3 n2 = tex2D(_CameraGBufferTexture2, uv2);
         float3 n3 = tex2D(_CameraGBufferTexture2, uv3);
 
-        // roberts cross operator
+        // Roberts cross operator
         float3 ng1 = n1 - n0;
         float3 ng2 = n3 - n2;
         float ng = sqrt(dot(ng1, ng1) + dot(ng2, ng2));
 
         edge = max(edge, ng * _NormalSensitivity);
 
-        #endif
+    #endif
 
-        // thresholding
-        edge = saturate((edge - _LowThreshold) / (_HighThreshold - _LowThreshold));
+        // Thresholding
+        edge = saturate((edge - _Threshold) * _InvRange);
 
         half4 cs = tex2D(_MainTex, i.uv);
         half3 c0 = lerp(cs.rgb, _BgColor.rgb, _BgColor.a);
