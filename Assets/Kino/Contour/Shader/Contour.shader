@@ -24,9 +24,7 @@ Shader "Hidden/Kino/Contour"
 {
     Properties
     {
-        _MainTex ("-", 2D) = "" {}
-        _Color ("-", Color) = (0, 0, 0, 1)
-        _BgColor ("-", Color) = (1, 1, 1, 0)
+        _MainTex("", 2D) = "" {}
     }
 
     CGINCLUDE
@@ -127,7 +125,6 @@ Shader "Hidden/Kino/Contour"
             CGPROGRAM
             #pragma vertex vert_img
             #pragma fragment frag
-            #pragma target 3.0
             ENDCG
         }
     }

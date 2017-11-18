@@ -106,7 +106,23 @@ namespace Kino
 
         #region MonoBehaviour Functions
 
-        void OnEnable()
+        void OnValidate()
+        {
+            _lowThreshold = Mathf.Min(_lowThreshold, _highThreshold);
+        }
+
+        void OnDestroy()
+        {
+            if (_material != null)
+            {
+                if (Application.isPlaying)
+                    Destroy(_material);
+                else
+                    DestroyImmediate(_material);
+            }
+        }
+
+        void Update()
         {
             GetComponent<Camera>().depthTextureMode |= DepthTextureMode.Depth;
         }
@@ -122,9 +138,8 @@ namespace Kino
             _material.SetColor("_Color", _lineColor);
             _material.SetColor("_BgColor", _backgroundColor);
 
-            var hi = Mathf.Max(_lowThreshold, _highThreshold);
             _material.SetFloat("_LowThreshold", _lowThreshold);
-            _material.SetFloat("_HighThreshold", hi);
+            _material.SetFloat("_HighThreshold", _highThreshold);
 
             _material.SetFloat("_DepthSensitivity", _depthSensitivity);
             _material.SetFloat("_NormalSensitivity", _normalSensitivity);
