@@ -1,26 +1,22 @@
-# Unity
-Library
-Temp
-*.pidb
-*.userprefs
-
-# Xcode
-xcuserdata
-xcshareddata
-*.pbxuser
-
-# Visual Studio
-Debug/
-Release/
-x64/
-x86/
-build/
-ipch/
-*.sdf
-.vs
-
-# Misc
-*.swp
-*.lnk
-.DS_Store
+# Windows
 Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# Vim
+*.swp
+
+# Unity
+/Library
+/Temp
+/UnityPackageManager
+
+/Assets/FFmpegOut
+/Assets/StreamingAssets/FFmpegOut
+
+*.mov
+*.mp4
+
+/Extras/backup
