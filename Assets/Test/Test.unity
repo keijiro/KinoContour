@@ -3703,10 +3703,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _lineColor: {r: 0.17647058, g: 0.17647058, b: 0.17647058, a: 1}
   _backgroundColor: {r: 0.9632353, g: 0.9632353, b: 0.9632353, a: 1}
-  _lowThreshold: 0.1
-  _highThreshold: 0.3
-  _depthSensitivity: 2
-  _normalSensitivity: 0.67
+  _lowerThreshold: 0.2
+  _upperThreshold: 0.5
+  _colorSensitivity: 0
+  _depthSensitivity: 1
+  _normalSensitivity: 0.6
   _fallOffDepth: 40
   _shader: {fileID: 4800000, guid: b8cb1cfbd02c146ccbe95b4baf27a54e, type: 3}
 --- !u!81 &1039614770
