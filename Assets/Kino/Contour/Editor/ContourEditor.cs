@@ -38,6 +38,15 @@ namespace Kino
         SerializedProperty _normalSensitivity;
         SerializedProperty _fallOffDepth;
 
+        static class Styles
+        {
+            static public readonly GUIContent lowerBound = new GUIContent("Lower Bound");
+            static public readonly GUIContent upperBound = new GUIContent("Upper Bound");
+            static public readonly GUIContent color = new GUIContent("Color");
+            static public readonly GUIContent depth = new GUIContent("Depth");
+            static public readonly GUIContent normal = new GUIContent("Normal");
+        }
+
         static string useDeferredWarning =
             "G-buffer is required for normal edge detection. " +
             "Use the deferred rendering path.";
@@ -67,25 +76,23 @@ namespace Kino
             EditorGUILayout.PropertyField(_lineColor);
             EditorGUILayout.PropertyField(_backgroundColor);
 
-            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Threshold");
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(_lowerThreshold, Styles.lowerBound);
+            EditorGUILayout.PropertyField(_upperThreshold, Styles.upperBound);
+            EditorGUI.indentLevel--;
 
-            EditorGUILayout.PropertyField(_lowerThreshold);
-            EditorGUILayout.PropertyField(_upperThreshold);
+            EditorGUILayout.LabelField("Sensitivity");
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(_colorSensitivity, Styles.color);
+            EditorGUILayout.PropertyField(_depthSensitivity, Styles.depth);
+            EditorGUILayout.PropertyField(_normalSensitivity, Styles.normal);
+            EditorGUI.indentLevel--;
 
-            EditorGUILayout.Space();
-
-            EditorGUILayout.PropertyField(_colorSensitivity);
-
-            EditorGUILayout.PropertyField(_depthSensitivity);
             if (_depthSensitivity.hasMultipleDifferentValues ||
                 _depthSensitivity.floatValue > 0)
-            {
-                EditorGUI.indentLevel++;
                 EditorGUILayout.PropertyField(_fallOffDepth);
-                EditorGUI.indentLevel--;
-            }
 
-            EditorGUILayout.PropertyField(_normalSensitivity);
             if (_normalSensitivity.floatValue > 0 && !CheckDeferred())
                 EditorGUILayout.HelpBox(useDeferredWarning, MessageType.Warning);
 

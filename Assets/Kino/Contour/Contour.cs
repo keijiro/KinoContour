@@ -72,7 +72,7 @@ namespace Kino
         }
 
         // Depth sensitivity
-        [SerializeField, Range(0, 2)] float _depthSensitivity = 1;
+        [SerializeField, Range(0, 1)] float _depthSensitivity = 0.5f;
 
         public float depthSensitivity {
             get { return _depthSensitivity; }
@@ -141,7 +141,7 @@ namespace Kino
             _material.SetFloat("_Threshold", _lowerThreshold);
             _material.SetFloat("_InvRange", 1 / (_upperThreshold - _lowerThreshold));
             _material.SetFloat("_ColorSensitivity", _colorSensitivity);
-            _material.SetFloat("_DepthSensitivity", _depthSensitivity);
+            _material.SetFloat("_DepthSensitivity", _depthSensitivity * 2);
             _material.SetFloat("_NormalSensitivity", _normalSensitivity);
             _material.SetFloat("_InvFallOff", 1 / _fallOffDepth);
 
