@@ -29,9 +29,6 @@ Shader "Hidden/Kino/Contour"
 
     CGINCLUDE
 
-    #pragma multi_compile _ USE_DEPTH
-    #pragma multi_compile _ USE_NORMAL
-
     #include "UnityCG.cginc"
 
     sampler2D _MainTex;
@@ -41,18 +38,21 @@ Shader "Hidden/Kino/Contour"
     sampler2D _CameraGBufferTexture2;
 
     half4 _Color;
-    half4 _BgColor;
+    half4 _Background;
 
     half _Threshold;
     float _InvRange;
 
+    half _ColorSensitivity;
     half _DepthSensitivity;
     half _NormalSensitivity;
-
-    float _InvFallOffDepth;
+    float _InvFallOff;
 
     half4 frag(v2f_img i) : SV_Target
     {
+        // Source color
+        half4 c0 = tex2D(_MainTex, i.uv);
+
         // Four sample points of the roberts cross operator
         float2 uv0 = i.uv;                                   // TL
         float2 uv1 = i.uv + _MainTex_TexelSize.xy;           // BR
@@ -61,7 +61,23 @@ Shader "Hidden/Kino/Contour"
 
         half edge = 0;
 
-    #ifdef USE_DEPTH
+    #ifdef _CONTOUR_COLOR
+
+        // Color samples
+        float3 c1 = tex2D(_MainTex, uv1).rgb;
+        float3 c2 = tex2D(_MainTex, uv2).rgb;
+        float3 c3 = tex2D(_MainTex, uv3).rgb;
+
+        // Roberts cross operator
+        float3 cg1 = c1 - c0;
+        float3 cg2 = c3 - c2;
+        float cg = sqrt(dot(cg1, cg1) + dot(cg2, cg2));
+
+        edge = cg * _ColorSensitivity;
+
+    #endif
+
+    #ifdef _CONTOUR_DEPTH
 
         // Depth samples
         float zs0 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv0);
@@ -71,7 +87,7 @@ Shader "Hidden/Kino/Contour"
 
         // Calculate fall-off parameter from the depth of the nearest point
         float zm = min(min(min(zs0, zs1), zs2), zs3);
-        float falloff = 1.0 - saturate(LinearEyeDepth(zm) * _InvFallOffDepth);
+        float falloff = 1.0 - saturate(LinearEyeDepth(zm) * _InvFallOff);
 
         // Convert to linear depth values.
         float z0 = Linear01Depth(zs0);
@@ -84,17 +100,17 @@ Shader "Hidden/Kino/Contour"
         float zg2 = z3 - z2;
         float zg = sqrt(zg1 * zg1 + zg2 * zg2);
 
-        edge = zg * falloff * _DepthSensitivity / Linear01Depth(zm);
+        edge = max(edge, zg * falloff * _DepthSensitivity / Linear01Depth(zm));
 
     #endif
 
-    #ifdef USE_NORMAL
+    #ifdef _CONTOUR_NORMAL
 
         // Normal samples from the G-buffer
-        float3 n0 = tex2D(_CameraGBufferTexture2, uv0);
-        float3 n1 = tex2D(_CameraGBufferTexture2, uv1);
-        float3 n2 = tex2D(_CameraGBufferTexture2, uv2);
-        float3 n3 = tex2D(_CameraGBufferTexture2, uv3);
+        float3 n0 = tex2D(_CameraGBufferTexture2, uv0).rgb;
+        float3 n1 = tex2D(_CameraGBufferTexture2, uv1).rgb;
+        float3 n2 = tex2D(_CameraGBufferTexture2, uv2).rgb;
+        float3 n3 = tex2D(_CameraGBufferTexture2, uv3).rgb;
 
         // Roberts cross operator
         float3 ng1 = n1 - n0;
@@ -108,10 +124,9 @@ Shader "Hidden/Kino/Contour"
         // Thresholding
         edge = saturate((edge - _Threshold) * _InvRange);
 
-        half4 cs = tex2D(_MainTex, i.uv);
-        half3 c0 = lerp(cs.rgb, _BgColor.rgb, _BgColor.a);
-        half3 co = lerp(c0, _Color.rgb, edge * _Color.a);
-        return half4(co, cs.a);
+        half3 cb = lerp(c0.rgb, _Background.rgb, _Background.a);
+        half3 co = lerp(cb, _Color.rgb, edge * _Color.a);
+        return half4(co, c0.a);
     }
 
     ENDCG
@@ -123,6 +138,9 @@ Shader "Hidden/Kino/Contour"
             CGPROGRAM
             #pragma vertex vert_img
             #pragma fragment frag
+            #pragma multi_compile _ _CONTOUR_COLOR
+            #pragma multi_compile _ _CONTOUR_DEPTH
+            #pragma multi_compile _ _CONTOUR_NORMAL
             ENDCG
         }
     }

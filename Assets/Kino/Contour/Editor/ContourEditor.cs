@@ -31,8 +31,9 @@ namespace Kino
     {
         SerializedProperty _lineColor;
         SerializedProperty _backgroundColor;
-        SerializedProperty _lowThreshold;
-        SerializedProperty _highThreshold;
+        SerializedProperty _lowerThreshold;
+        SerializedProperty _upperThreshold;
+        SerializedProperty _colorSensitivity;
         SerializedProperty _depthSensitivity;
         SerializedProperty _normalSensitivity;
         SerializedProperty _fallOffDepth;
@@ -51,8 +52,9 @@ namespace Kino
         {
             _lineColor = serializedObject.FindProperty("_lineColor");
             _backgroundColor = serializedObject.FindProperty("_backgroundColor");
-            _lowThreshold = serializedObject.FindProperty("_lowThreshold");
-            _highThreshold = serializedObject.FindProperty("_highThreshold");
+            _lowerThreshold = serializedObject.FindProperty("_lowerThreshold");
+            _upperThreshold = serializedObject.FindProperty("_upperThreshold");
+            _colorSensitivity = serializedObject.FindProperty("_colorSensitivity");
             _depthSensitivity = serializedObject.FindProperty("_depthSensitivity");
             _normalSensitivity = serializedObject.FindProperty("_normalSensitivity");
             _fallOffDepth = serializedObject.FindProperty("_fallOffDepth");
@@ -67,22 +69,25 @@ namespace Kino
 
             EditorGUILayout.Space();
 
-            EditorGUILayout.PropertyField(_lowThreshold);
-            EditorGUILayout.PropertyField(_highThreshold);
+            EditorGUILayout.PropertyField(_lowerThreshold);
+            EditorGUILayout.PropertyField(_upperThreshold);
 
             EditorGUILayout.Space();
+
+            EditorGUILayout.PropertyField(_colorSensitivity);
 
             EditorGUILayout.PropertyField(_depthSensitivity);
-            EditorGUILayout.PropertyField(_normalSensitivity);
-
-            if (_normalSensitivity.floatValue > 0 && !CheckDeferred())
-                EditorGUILayout.HelpBox(useDeferredWarning, MessageType.Warning);
-
-            EditorGUILayout.Space();
-
             if (_depthSensitivity.hasMultipleDifferentValues ||
                 _depthSensitivity.floatValue > 0)
+            {
+                EditorGUI.indentLevel++;
                 EditorGUILayout.PropertyField(_fallOffDepth);
+                EditorGUI.indentLevel--;
+            }
+
+            EditorGUILayout.PropertyField(_normalSensitivity);
+            if (_normalSensitivity.floatValue > 0 && !CheckDeferred())
+                EditorGUILayout.HelpBox(useDeferredWarning, MessageType.Warning);
 
             serializedObject.ApplyModifiedProperties();
         }
