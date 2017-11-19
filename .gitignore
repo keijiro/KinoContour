@@ -12,11 +12,4 @@ Desktop.ini
 /Library
 /Temp
 /UnityPackageManager
-
-/Assets/FFmpegOut
-/Assets/StreamingAssets/FFmpegOut
-
-*.mov
-*.mp4
-
-/Extras/backup
+/Packages
