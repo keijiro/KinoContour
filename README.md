@@ -1,5 +1,5 @@
-KinoContour
-===========
+Contour
+=======
 
 **Contour** is a contour line (edge detection) filter for Unity.
 
