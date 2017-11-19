@@ -3,7 +3,7 @@ Contour
 
 **Contour** is a contour line (edge detection) filter for Unity.
 
-![screenshot](http://i.imgur.com/lJIuddA.png)
+![screenshot](http://i.imgur.com/lJIuddAl.png)
 
 Installation
 ------------
@@ -25,9 +25,9 @@ Color**.
 Contour supports three types of sources -- **Color**, **Depth** and **Normal**. 
 The Normal source is only available in the deferred shading path.
 
-In typical usage, the Depth source is used to add silhouette lines to objects,
-but it's not good at detecting boundaries between contacting objects (e.g. feet
-and ground). The Normal source is useful for such cases.
+In the typical usage, the Depth source is used to add silhouette lines to
+objects, but it's not good at detecting boundaries between contacting objects
+(e.g. feet and ground). The Normal source is useful for such cases.
 
 License
 -------
